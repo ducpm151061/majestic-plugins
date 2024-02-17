@@ -5,129 +5,137 @@
 #include <plugin.h>
 
 static void set_blackwhite(const char *value) {
-	bool index = strlen(value) ? atoi(value) : false;
+  bool index = strlen(value) ? atoi(value) : false;
 
-	MI_ISP_IQ_COLORTOGRAY_TYPE_t color;
-	color.bEnable = index;
+  MI_ISP_IQ_COLORTOGRAY_TYPE_t color;
+  color.bEnable = index;
 
-	if (MI_ISP_IQ_SetColorToGray(0, &color)) {
-		RETURN("MI_ISP_IQ_SetColorToGray failed");
-	}
+  if (MI_ISP_IQ_SetColorToGray(0, &color)) {
+    RETURN("MI_ISP_IQ_SetColorToGray failed");
+  }
 
-	RETURN("Set blackwhite: %d", index);
+  RETURN("Set blackwhite: %d", index);
 }
 
 static void set_brightness(const char *value) {
-	MI_ISP_IQ_BRIGHTNESS_TYPE_t brightness;
-	if (MI_ISP_IQ_GetBrightness(0, &brightness)) {
-		RETURN("MI_ISP_IQ_GetBrightness failed");
-	}
+  MI_ISP_IQ_BRIGHTNESS_TYPE_t brightness;
+  if (MI_ISP_IQ_GetBrightness(0, &brightness)) {
+    RETURN("MI_ISP_IQ_GetBrightness failed");
+  }
 
-	if (!strlen(value)) {
-		RETURN("Get brightness: %d", brightness.stManual.stParaAPI.u32Lev);
-	}
+  if (!strlen(value)) {
+    RETURN("Get brightness: %d", brightness.stManual.stParaAPI.u32Lev);
+  }
 
-	int index = atoi(value);
-	brightness.bEnable = SS_TRUE;
-	brightness.enOpType = SS_OP_TYP_MANUAL;
-	brightness.stManual.stParaAPI.u32Lev = index;
+  int index = atoi(value);
+  brightness.bEnable = SS_TRUE;
+  brightness.enOpType = SS_OP_TYP_MANUAL;
+  brightness.stManual.stParaAPI.u32Lev = index;
 
-	if (MI_ISP_IQ_SetBrightness(0, &brightness)) {
-		RETURN("MI_ISP_IQ_SetBrightness failed");
-	}
+  if (MI_ISP_IQ_SetBrightness(0, &brightness)) {
+    RETURN("MI_ISP_IQ_SetBrightness failed");
+  }
 
-	RETURN("Set brightness: %d", index);
+  RETURN("Set brightness: %d", index);
 }
 
 static void set_contrast(const char *value) {
-	MI_ISP_IQ_CONTRAST_TYPE_t contrast;
-	if (MI_ISP_IQ_GetContrast(0, &contrast)) {
-		RETURN("MI_ISP_IQ_GetContrast failed");
-	}
+  MI_ISP_IQ_CONTRAST_TYPE_t contrast;
+  if (MI_ISP_IQ_GetContrast(0, &contrast)) {
+    RETURN("MI_ISP_IQ_GetContrast failed");
+  }
 
-	if (!strlen(value)) {
-		RETURN("Get contrast: %d", contrast.stManual.stParaAPI.u32Lev);
-	}
+  if (!strlen(value)) {
+    RETURN("Get contrast: %d", contrast.stManual.stParaAPI.u32Lev);
+  }
 
-	int index = atoi(value);
-	contrast.bEnable = SS_TRUE;
-	contrast.enOpType = SS_OP_TYP_MANUAL;
-	contrast.stManual.stParaAPI.u32Lev = index;
+  int index = atoi(value);
+  contrast.bEnable = SS_TRUE;
+  contrast.enOpType = SS_OP_TYP_MANUAL;
+  contrast.stManual.stParaAPI.u32Lev = index;
 
-	if (MI_ISP_IQ_SetContrast(0, &contrast)) {
-		RETURN("MI_ISP_IQ_SetContrast failed");
-	}
+  if (MI_ISP_IQ_SetContrast(0, &contrast)) {
+    RETURN("MI_ISP_IQ_SetContrast failed");
+  }
 
-	RETURN("Set contrast: %d", index);
+  RETURN("Set contrast: %d", index);
 }
 
 static void set_rotation(const char *value) {
-	int index = strlen(value) ? atoi(value) : -1;
-	bool mirror, flip;
+  int index = strlen(value) ? atoi(value) : -1;
+  bool mirror, flip;
 
-	switch (index) {
-		case 0:
-			mirror = false;
-			flip = false;
-			break;
+  switch (index) {
+  case 0:
+    mirror = false;
+    flip = false;
+    break;
 
-		case 1:
-			mirror = true;
-			flip = false;
-			break;
+  case 1:
+    mirror = true;
+    flip = false;
+    break;
 
-		case 2:
-			mirror = false;
-			flip = true;
-			break;
+  case 2:
+    mirror = false;
+    flip = true;
+    break;
 
-		case 3:
-			mirror = true;
-			flip = true;
-			break;
+  case 3:
+    mirror = true;
+    flip = true;
+    break;
 
-		default:
-			RETURN("Unknown rotation: %d", index);
-	}
+  default:
+    RETURN("Unknown rotation: %d", index);
+  }
 
-	if (MI_SNR_SetOrien(0, mirror, flip)) {
-		RETURN("MI_SNR_SetOrien failed");
-	}
+  if (MI_SNR_SetOrien(0, mirror, flip)) {
+    RETURN("MI_SNR_SetOrien failed");
+  }
 
-	RETURN("Set rotation: %d", index);
+  RETURN("Set rotation: %d", index);
 }
 
 static void get_isp_again() {
-	CusAEInfo_t info;
-	if (MI_ISP_CUS3A_GetAeStatus(0, &info)) {
-		RETURN("MI_ISP_CUS3A_GetAeStatus failed");
-	}
+  CusAEInfo_t info;
+  if (MI_ISP_CUS3A_GetAeStatus(0, &info)) {
+    RETURN("MI_ISP_CUS3A_GetAeStatus failed");
+  }
 
-	RETURN("%d", info.SensorGain);
+  RETURN("%d", info.SensorGain);
 }
 
 static void get_version() {
-	MI_SYS_Version_t version;
-	if (MI_SYS_GetVersion(&version)) {
-		RETURN("MI_SYS_GetVersion failed");
-	}
+  MI_SYS_Version_t version;
+  if (MI_SYS_GetVersion(&version)) {
+    RETURN("MI_SYS_GetVersion failed");
+  }
 
-	RETURN("%s", version.u8Version);
+  RETURN("%s", version.u8Version);
+}
+
+static char *fpv_motion(const char *value) {
+  if ((0, value)) {
+    RETURN("MI_SYS_SetFpvMotionDetect failed");
+  }
+
+  RETURN("Set motion: %s", value);
 }
 
 static table custom[] = {
-	{ "blackwhite", &set_blackwhite },
-	{ "brightness", &set_brightness },
-	{ "contrast", &set_contrast },
-	{ "rotation", &set_rotation },
-	{ "isp_again", &get_isp_again },
-	{ "version", &get_version },
-	{ "motion", &call_motion },
-	{ "setup", &call_setup },
-	{ "help", &get_usage },
+    {"blackwhite", &set_blackwhite},
+    {"brightness", &set_brightness},
+    {"contrast", &set_contrast},
+    {"rotation", &set_rotation},
+    {"isp_again", &get_isp_again},
+    {"version", &get_version},
+    {"motion", &call_motion},
+    {"setup", &call_setup},
+    {"help", &get_usage},
 };
 
 config common = {
-	.list = custom,
-	.size = sizeof(custom) / sizeof(table),
+    .list = custom,
+    .size = sizeof(custom) / sizeof(table),
 };
